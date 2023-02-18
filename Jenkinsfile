@@ -1,33 +1,31 @@
 pipeline {
-  agent any
-  stages {
-    stage('Build') {
-      steps {
-        sh 'mvn clean install'
-        echo 'Build Stage Successful'
-      }
-   }
-   stage('Test') {
-    steps {
-        sh 'mvn test'
-        echo 'Test Stage Successful'
-        post {
-          always {
-            juint 'target/surefire-reports/*.xml'
-          }
+    agent any
+
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Starting Build'
+                sh 'make -C main'
+                echo 'Build Completed'
+            }
         }
-      }
+        stage('Test') {
+            steps {
+                echo 'Starting Testing'
+                sh '/var/jenkins_home/workspace/PES2UG20CS159-1/main/hello_exec'
+                echo 'Test Completed'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Starting Deploy'
+                echo 'Deploy Completed'
+            }
+        }
     }
-    stage('Deploy') {
-      steps {
-        sh 'mvn deploy'
-        echo 'Deployment Successful'
-      }
-   }
- }
- post {
-  failure {
-    echo 'Pipeline has failed'
-   }
+  post {
+    failure {
+      echo 'Pipeline Failed'
+    }
   }
- }
+}
